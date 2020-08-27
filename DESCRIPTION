@@ -1,0 +1,20 @@
+Package: hintr.comparisons
+Title: Test for hintr and refactor using pkgapi
+Version: 0.0.1
+Authors@R: 
+    person(given = "Robert",
+           family = "Ashton",
+           role = c("aut", "cre"),
+           email = "r.ashton@imperial.ac.uk")
+Description: Test for hintr and refactor using pkgapi.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Additional_repositories: https://mrc-ide.github.io/drat
+Imports:
+    hintr,
+    hintr2
+Suggests: 
+    testthat

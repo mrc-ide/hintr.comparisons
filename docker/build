@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+HERE=$(dirname $0)
+. $HERE/common
+
+rm -rf hintr
+git clone https://github.com/mrc-ide/hintr
+
+docker build --pull \
+       -t $TAG_SHA \
+       -f docker/Dockerfile \
+       .
+
+# We always push the SHA tagged versions, for debugging if the tests
+# after this step fail
+docker push $TAG_SHA
