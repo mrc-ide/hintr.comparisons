@@ -13,8 +13,14 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Additional_repositories: https://mrc-ide.github.io/drat
-Imports:
+Suggests:
+    callr,
     hintr,
-    hintr2
-Suggests: 
-    testthat
+    hintr2,
+    httr,
+    ids,
+    jsonlite,
+    redux,
+    testthat,
+    withr,
+    zip

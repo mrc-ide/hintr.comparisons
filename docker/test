@@ -6,4 +6,33 @@ HERE=$(dirname $0)
 # In case we switch agents between steps
 [ ! -z $(docker images -q $TAG_SHA) ] || docker pull $TAG_SHA
 
-docker run --rm $TAG_SHA test_self
+NAME_REDIS=hintr.comparisons_redis
+NAME_SERVER=hintr.comparisons_server
+NAME_NETWORK=hintr.comparisons_network
+NAME_VOLUME=hintr.comparisons_volume
+
+function cleanup {
+    echo "Cleaning up"
+    docker kill $NAME_REDIS > /dev/null || true
+    docker kill $NAME_SERVER > /dev/null || true
+    docker kill hintr.comparisons > /dev/null || true
+    docker network rm $NAME_NETWORK > /dev/null || true
+    docker volume rm $NAME_VOLUME > /dev/null || true
+}
+
+trap cleanup EXIT
+
+docker network create $NAME_NETWORK
+docker volume create $NAME_VOLUME
+
+docker run --rm -d --network=$NAME_NETWORK --network-alias=redis \
+       --name $NAME_REDIS redis
+
+docker run --rm --network=$NAME_NETWORK \
+       -e REDIS_URL=redis://redis:6379 \
+       -e VALIDATE_JSON_SCHEMAS=true \
+       -e USE_MOCK_MODEL=true \
+       --mount type=volume,src=$NAME_VOLUME,dst=/uploads \
+       --mount type=volume,src=$NAME_VOLUME,dst=/results \
+       --name hintr.comparisons $TAG_SHA \
+       /usr/local/bin/R CMD check --as-cran hintr.comparisons_$PACKAGE_VERSION.tar.gz
